@@ -24,6 +24,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(final String partyId, final String username) {
         logger.info("Creating User with partyId=" + partyId + ", username=" + username);
+
         final User user = userRepository.save(new User(partyId, username));
 
         logger.info("New User Created. user=" + user);
@@ -33,6 +34,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUser(final String partyId, final String username) {
         logger.info("Getting User with partyId=" + partyId + " and username=" + username);
+
         final Optional<User> optional =
                 userRepository.findById(new User(partyId, username).getId());
         if (optional.isEmpty()) {

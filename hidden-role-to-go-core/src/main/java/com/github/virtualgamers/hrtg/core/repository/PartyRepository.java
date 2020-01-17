@@ -12,4 +12,5 @@ import com.github.virtualgamers.hrtg.core.model.Party;
  */
 @Repository
 public interface PartyRepository extends CrudRepository<Party, String> {
+
 }

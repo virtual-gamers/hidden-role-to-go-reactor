@@ -81,6 +81,7 @@ public class PartyServiceImpl implements PartyService {
         final Random random = new Random();
 
         // String to store 62 possible characters.
+
         final String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         int size = 4; // 62^4 = 14776336 possibilities
         String code;

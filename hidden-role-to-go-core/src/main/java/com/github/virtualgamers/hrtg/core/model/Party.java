@@ -39,6 +39,7 @@ public class Party implements Serializable {
      * {@link LinkedList} is used, as with most games, turn order will matter.
      */
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true,
+
             mappedBy = "id.partyId")
     List<User> users;
 
@@ -77,6 +78,7 @@ public class Party implements Serializable {
         return users;
     }
 
+
     public void setUsers(final List<User> users) {
         this.users = users;
     }
@@ -101,10 +103,12 @@ public class Party implements Serializable {
      */
     public void addUsers(final User... users) {
         addUsers(new ArrayList<>(Arrays.asList(users)));
+
     }
 
     @Override
     public String toString() {
+
         return "Party [id=" + id + ", partyLeaderUserId=" + partyLeaderUserId + ", game=" + game
                 + ", users=" + users + "]";
     }
