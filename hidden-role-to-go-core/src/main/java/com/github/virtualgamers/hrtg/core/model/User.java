@@ -16,7 +16,8 @@ import javax.persistence.InheritanceType;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class User {
+public class User implements Serializable {
+    private static final long serialVersionUID = 831938488084888274L;
 
     @Embeddable
     public static class Pk implements Serializable {

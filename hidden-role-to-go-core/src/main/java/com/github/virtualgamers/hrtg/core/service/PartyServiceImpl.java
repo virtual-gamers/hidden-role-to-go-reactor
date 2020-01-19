@@ -64,21 +64,25 @@ public class PartyServiceImpl implements PartyService {
         logger.info("Starting Party for username=" + username);
 
         logger.info("Creating party");
-        final Party party = new Party();
-        party.setPartyCode(generatePartyCode());
+        final String partyCode = generatePartyCode();
+        final Party party = new Party(partyCode);
+        // party.setPartyCode(generatePartyCode());
 
         final Party persistedParty = partyRepository.save(party);
         logger.info("New Party started. persistedParty=" + persistedParty);
 
         final String partyId = party.getId();
         final User user = userService.createUser(partyId, username);
+        logger.info("party2=" + party); //
 
         logger.info("Adding user to party with partyId=" + partyId + ". user=" + user);
         party.addUsers(user);
+        logger.info("party3=" + party); //
         party.setPartyLeaderUserId(user.getUsername());
 
+        logger.info("Updating Party=" + party);
         final Party updatedParty = partyRepository.save(party);
-        logger.info("Party updated with party leader. updatedParty=" + updatedParty);
+        logger.info("Party updated. updatedParty=" + updatedParty);
         return updatedParty;
     }
 

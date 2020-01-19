@@ -1,5 +1,7 @@
 package com.github.virtualgamers.hrtg.core.model;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,11 +9,13 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import org.hibernate.annotations.GenericGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.github.virtualgamers.hrtg.core.model.listener.PartyListener;
 
 /**
  * Represents a party, or a grouping of {@link User}s playing a {@link Game}
@@ -20,10 +24,15 @@ import org.hibernate.annotations.GenericGenerator;
  *
  */
 @Entity
-public class Party {
+@EntityListeners(PartyListener.class)
+public class Party implements Serializable {
+    private static final long serialVersionUID = 3680839567940085207L;
+
+    private static Logger logger = LoggerFactory.getLogger(Party.class);
+
     @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    // @GeneratedValue(generator = "system-uuid")
+    // @GenericGenerator(name = "system-uuid", strategy = "uuid")
     String id;
 
     @Column(name = "party_code")
@@ -42,12 +51,12 @@ public class Party {
             mappedBy = "id.party")
     List<User> users;
 
-    public Party() {}
 
-    public Party(final User user) {
-        this.partyLeaderUserId = user.getUsername();
-        this.users = new LinkedList<>();
-        this.users.add(user);
+    public Party() {/* needed for jpa */}
+
+    public Party(final String partyCode) {
+        this.id = partyCode;
+        this.partyCode = partyCode;
     }
 
     public String getId() {
@@ -78,26 +87,24 @@ public class Party {
         this.partyLeaderUserId = partyLeaderUserId;
     }
 
-    public void addUsers(final User... abstractUsers) {
-        addUsers(Arrays //
-                .stream(abstractUsers) //
-                .map(abstractUser -> abstractUser) //
-                .collect(Collectors.toCollection(LinkedList::new)));
+    public void addUsers(final User... users) {
+        logger.info("Adding users=" + Arrays.stream(users).map(user -> user.toString())
+                .collect(Collectors.joining(",")));
+
+        // Creates mutable list
+        addUsers(new ArrayList<>(Arrays.asList(users)));
     }
 
-    public void addUsers(final LinkedList<User> abstractUsers) {
+    public void addUsers(final List<User> users) {
         if (this.users == null) {
-            setUsers(abstractUsers);
+            setUsers(users);
+        } else {
+            this.users.addAll(users);
         }
-        this.users.addAll(abstractUsers);
     }
 
     public List<User> getUsers() {
         return users;
-    }
-
-    public void setUsers(final LinkedList<User> users) {
-        this.users = users;
     }
 
     public String getGameId() {
